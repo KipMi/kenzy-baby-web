@@ -36,10 +36,10 @@ const Navbar = () => {
                 <Link href={"/"}>Home</Link>
               </li>
               <li>
-                <Link href={"/about-us"}>About Us</Link>
+                <Link href={"/shop"}>Shop</Link>
               </li>
               <li>
-                <Link href={"/shop"}>Shop</Link>
+                <Link href={"/about-us"}>About Us</Link>
               </li>
             </ul>
           </DrawerContent>

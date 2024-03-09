@@ -14,9 +14,13 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "@/components/ui/input";
+import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
 
 const formSchema = z.object({
   emailAddress: z.string().email(),
+  subject: z.string().max(50),
+  body: z.string().max(300),
 });
 
 const ContactForm = () => {
@@ -39,7 +43,7 @@ const ContactForm = () => {
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel className="font-bold">Email</FormLabel>
+                  <FormLabel className="font-medium">Email</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Email"
@@ -53,6 +57,51 @@ const ContactForm = () => {
               );
             }}
           />
+          <FormField
+            control={form.control}
+            name="subject"
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel className="font-medium">Subject</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Subject"
+                      {...field}
+                      className="bg-white"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+          <FormField
+            control={form.control}
+            name="body"
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel className=" font-medium">Message</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Your message here."
+                      {...field}
+                      className="bg-white min-h-32 max-h-40"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+          <Button
+            type="submit"
+            value={"Submit"}
+            className="bg-white text-black mt-2"
+          >
+            Submit
+          </Button>
         </form>
       </Form>
     </div>
