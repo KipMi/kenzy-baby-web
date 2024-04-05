@@ -1,7 +1,6 @@
 "use client";
 
-import { sendEmail } from "@/lib/mail";
-import React from "react";
+import React, { useState } from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,22 +15,30 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
+import { sendEmail } from "@/emails/sendEmail";
 
 const formSchema = z.object({
-  emailAddress: z.string().email(),
-  subject: z.string().max(50),
-  body: z.string().max(300),
+  emailAddress: z.string().email().min(1),
+  subject: z.string().max(50).min(1),
+  body: z.string().max(300).min(1),
 });
 
 const ContactForm = () => {
+  const [submitting, setSubmitting] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       emailAddress: "",
+      subject: "",
+      body: "",
     },
   });
 
-  const handleSubmit = () => {};
+  const handleSubmit = (values: z.infer<typeof formSchema>) => {
+    sendEmail(values);
+    // console.log(values);
+  };
 
   return (
     <div>

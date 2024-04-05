@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Autoplay from "embla-carousel-autoplay";
 import {
   Carousel,
   CarouselContent,
@@ -8,29 +9,52 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import HeadlineImage from "./headline-image";
+import testbg from "../../public/testbg.jpg";
+import { getDataQuery } from "@/firebase/database/readData";
 
 const BigCarousel = () => {
+  const plugin = React.useRef(
+    Autoplay({ delay: 2000, stopOnInteraction: true })
+  );
+
+  const [data, setData] = useState<any[] | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await getDataQuery("main_poster");
+      const resultArray = Object.keys(result).map((key) => ({
+        id: key,
+        ...result[key],
+      }));
+      setData(resultArray);
+    };
+
+    fetchData();
+  }, []);
+
   return (
-    <Carousel className="w-screen h-64 bg-slate-500 relative">
+    <Carousel
+      className="w-full lg:w-3/4 lg:my-5 aspect-video"
+      plugins={[plugin.current]}
+      onMouseEnter={plugin.current.stop}
+      onMouseLeave={plugin.current.reset}
+    >
       <CarouselContent>
-        <CarouselItem>
-          <div className="w-full h-64 bg-red-300 flex justify-center items-center">
-            Item 1
-          </div>
-        </CarouselItem>
-        <CarouselItem>
-          <div className="w-full h-64 bg-blue-300 flex justify-center items-center">
-            Item 2
-          </div>
-        </CarouselItem>
-        <CarouselItem>
-          <div className="w-full h-64 bg-green-300 flex justify-center items-center">
-            Item 3
-          </div>
-        </CarouselItem>
+        {data
+          ? data.map((items) => (
+              <CarouselItem key={items.id}>
+                <HeadlineImage
+                  imageURL={items.imageUrl}
+                  imageLink={items.link}
+                />
+                {/* item {index} */}
+              </CarouselItem>
+            ))
+          : ""}
       </CarouselContent>
-      <CarouselPrevious className="left-4" />
-      <CarouselNext className="right-4" />
+      <CarouselPrevious className="left-4 lg:hidden" />
+      <CarouselNext className="right-4 lg:hidden" />
     </Carousel>
   );
 };
